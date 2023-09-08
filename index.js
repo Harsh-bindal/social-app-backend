@@ -10,6 +10,7 @@ const conversationRouter=require("./routes/conversation");
 const messageRouter =require("./routes/message");
 const multer=require("multer");
 const path=require("path");
+const PORT=process.env.PORT || 8000
 
 dotenv.config();
 
@@ -58,7 +59,7 @@ app.use("/api/conversation",conversationRouter);
 app.use("/api/message",messageRouter);
 
 
-app.listen(8000, () =>{
+app.listen(PORT, () =>{
     console.log("hello this is console");
 });
 
