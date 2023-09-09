@@ -29,6 +29,7 @@ app.use(express.json());
 app.use(morgan("common"));
 app.use(helmet());
 app.use(cors());
+app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 
 
 const storage=multer.diskStorage({
