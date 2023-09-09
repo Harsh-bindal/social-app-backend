@@ -11,6 +11,7 @@ const messageRouter =require("./routes/message");
 const multer=require("multer");
 const path=require("path");
 const PORT=process.env.PORT || 8000
+const cors=require("cors")
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.use("/image",express.static(path.join(__dirname,"public/image")));
 app.use(express.json());
 app.use(morgan("common"));
 app.use(helmet());
+app.use(cors());
 
 
 const storage=multer.diskStorage({
