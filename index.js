@@ -63,6 +63,6 @@ app.use("/api/message",messageRouter);
 
 
 app.listen(PORT, () =>{
-    console.log("hello this is console");
+    console.log("Connected at port",PORT);
 });
 
