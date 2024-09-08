@@ -12,7 +12,6 @@ const User =require("../models/Users");
 
 
 //update user
-
 router.put("/:id", async (req,res) => {
   if(req.body.userId === req.params.id || req.body.isAdmin)
   {
@@ -40,8 +39,7 @@ router.put("/:id", async (req,res) => {
   }
 })
 
-//delete user
-
+//Delete user
 router.delete("/:id", async (req,res)=>{
     if(req.params.id === req.body.userId || req.body.isAdmin)
     {
@@ -60,12 +58,13 @@ router.delete("/:id", async (req,res)=>{
 })
 
 
+//Get one user by name Or ID
 router.get("/", async (req,res) =>{
     const userId= req.query.userId;
-    const username = req.query.username;
+    const username = req.query.username.toLowerCase(); 
     try{
 
-         const user = userId ?await User.findById(userId) :await User.findOne({name:username});
+         const user = userId ?await User.findById(userId) : await User.findOne({ name: { $regex: new RegExp(`^${username}$`, 'i') } });
          const {password,updatedAt,...other} =user._doc
          res.status(200).json(other)
     }

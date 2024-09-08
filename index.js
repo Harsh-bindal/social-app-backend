@@ -46,11 +46,14 @@ const storage=multer.diskStorage({
 const upload=multer({storage});
 app.post("/api/upload",upload.single("file"),(req,res)=>{
     try{
+        console.log("request recienved");
+        console.log(req.file);
        return res.status(200).json("file uploaded succesfuly");
     }
     catch(err)
     {
         console.log(err);
+        return res.status(500).json("Error occurred during file upload");
     }
 });
 

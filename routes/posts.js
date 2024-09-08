@@ -2,26 +2,20 @@ const Post = require("../models/Post");
 const router =require("express").Router();
 const User= require("../models/Users");
 
-//craete a new post
-router.post("/", async (req,res) => {
-    
-    const newPost = new Post(req.body)
-    
-    try{
+//create a new post
+router.post("/", async (req, res) => {
+    const newPost = new Post(req.body);
 
+    try {
         const savedPost = await newPost.save();
-        res.status(200).json(savedPost)
-    }
-    catch(err)
-    {
+        res.status(200).json(savedPost);
+    } catch (err) {
         res.status(500).json(err);
     }
- 
-
 });
 
 
-//update post
+//Update post
 router.put("/:id", async (req,res)=>{
     try{
         const post = await Post.findById(req.params.id);
@@ -43,8 +37,7 @@ router.put("/:id", async (req,res)=>{
 });
 
 
-//delete post
-
+//Delete post
 router.delete("/:id", async (req,res)=>{
     try{
 
@@ -66,6 +59,7 @@ router.delete("/:id", async (req,res)=>{
     }
 });
 
+
 //get post
 router.get("/:id", async(req,res)=>{
     try{
@@ -80,7 +74,6 @@ router.get("/:id", async(req,res)=>{
 
 
 //like post
-
 router.put("/:id/like", async(req,res)=>{
 
     try{
@@ -102,6 +95,8 @@ router.put("/:id/like", async(req,res)=>{
     }
 });
 
+
+//Get all posts by userName or userId
 router.get("/timeline/:userId", async (req,res)=>{
     try{
         const currentUser= await User.findById(req.params.userId);

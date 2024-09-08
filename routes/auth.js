@@ -2,6 +2,8 @@ const router=require("express").Router();
 const User=require("../models/Users");
 const bcrypt=require("bcrypt");
 
+
+//Register User
 router.post("/register",async (req,res)=>{
   
     try{
@@ -22,15 +24,16 @@ router.post("/register",async (req,res)=>{
     }
 });
 
+
+//LogIn user
 router.post("/login",async (req,res)=>{
     try{
-
-
         const user= await User.findOne({email:req.body.email});
         !user && res.status(400).send("user not found");
 
         const validPassword= await bcrypt.compare(req.body.password,user.password);
-        !validPassword && res.status(400).json("wrong password");
+        
+        if (!validPassword) return res.status(400).json("Wrong password");
 
         res.status(200).send(user);
     }
