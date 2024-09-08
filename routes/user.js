@@ -61,10 +61,13 @@ router.delete("/:id", async (req,res)=>{
 //Get one user by name Or ID
 router.get("/", async (req,res) =>{
     const userId= req.query.userId;
-    const username = req.query.username.toLowerCase(); 
+    const username = req.query.username ? req.query.username.toLowerCase() : null;
     try{
 
          const user = userId ?await User.findById(userId) : await User.findOne({ name: { $regex: new RegExp(`^${username}$`, 'i') } });
+         if (!user) {
+            return res.status(404).json("User not found");
+        }
          const {password,updatedAt,...other} =user._doc
          res.status(200).json(other)
     }
