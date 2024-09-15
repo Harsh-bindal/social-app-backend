@@ -144,6 +144,7 @@ router.put("/:id/unfollow", async (req,res) => {
 });
 
 
+//get friends
 router.get("/friends/:userId",async (req,res)=>{
 
     try{
@@ -167,6 +168,26 @@ router.get("/friends/:userId",async (req,res)=>{
         res.status(500).json(err);
     }
 
+});
+
+
+//get all friends
+router.get("/allUsers", async (req,res) =>{
+    try{
+
+         const allUsers = await User.find();
+
+        const usersWithoutSensitiveInfo = allUsers.map(user => {
+        const { password, updatedAt, ...other } = user._doc;
+        return other;
+        });
+
+        res.status(200).json(usersWithoutSensitiveInfo);
+    }
+    catch(err){
+        res.status(500).json({ error: err.message })
+    }
 })
+
 
 module.exports = router
