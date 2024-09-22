@@ -34,7 +34,7 @@ app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 
 const storage=multer.diskStorage({
     destination:(req,file,cb)=>{
-        cb(null,"public/image");
+        cb(null,"public/images");
     },
 
     filename:(req,file,cb)=>{
@@ -46,9 +46,9 @@ const storage=multer.diskStorage({
 const upload=multer({storage});
 app.post("/api/upload",upload.single("file"),(req,res)=>{
     try{
-        console.log("request recienved");
+        console.log("request recieved");
         console.log(req.file);
-       return res.status(200).json("file uploaded succesfuly");
+       return res.status(200).json("file uploaded succesfully");
     }
     catch(err)
     {
