@@ -157,10 +157,11 @@ router.get("/friends/:userId",async (req,res)=>{
     
         let friendList=[];
 
-        friends.map(friend=>{
-            const {_id,name,profilePicture}=friend;
-            friendList.push({_id ,name,profilePicture});
+        friends.forEach(friend => {
+            const { _id, name, profilePicture } = friend;
+            friendList.push({ _id, name, profilePicture });
         });
+
 
         res.status(200).json(friendList);
     } 
