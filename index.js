@@ -30,11 +30,11 @@ app.use(morgan("common"));
 app.use(helmet());
 app.use(cors());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
-
+app.use('/public', express.static(path.join(__dirname, 'public')));
 
 const storage=multer.diskStorage({
     destination:(req,file,cb)=>{
-        cb(null,"public/images");
+        cb(null,"public/image");
     },
 
     filename:(req,file,cb)=>{
