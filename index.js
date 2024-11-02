@@ -10,7 +10,7 @@ const conversationRouter=require("./routes/conversation");
 const messageRouter =require("./routes/message");
 const multer=require("multer");
 const path=require("path");
-const PORT= 8000
+const PORT=  process.env.PORT || 8000
 const cors=require("cors")
 const http=require("http")
 const socketIo = require("socket.io");
@@ -23,6 +23,12 @@ mongoose.connect(process.env.MONGO_URL, {useNewUrlParser: true,  useUnifiedTopol
 
 
 const app=express();
+const server = http.createServer(app);
+const io = socketIo(server, {
+  cors: {
+    origin: "https://social-app-frontend-chka.onrender.com",
+  },
+});
 
 
 
@@ -70,12 +76,6 @@ app.use("/api/message",messageRouter);
 
 
 // Socket.IO setup
-const io = require("socket.io")(8900, {
-  cors: {
-    origin: "https://social-app-frontend-chka.onrender.com",
-  },
-});
-
 let users = [];
 
 const addUser = (userId, socketId) => {
@@ -119,7 +119,7 @@ io.on("connection", (socket) => {
 });
 ////////////////////////
 
-app.listen(PORT, () =>{
+server.listen(PORT, () =>{
     console.log("Connected at port",PORT);
 });
 
