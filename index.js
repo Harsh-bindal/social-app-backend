@@ -23,15 +23,7 @@ mongoose.connect(process.env.MONGO_URL, {useNewUrlParser: true,  useUnifiedTopol
 
 
 const app=express();
-///////////
-const server = http.createServer(app);
-const io = socketIo(server, {
-  cors: {
-    origin: "*",
-    methods: ["GET", "POST"],
-  }
-});
-////////////////
+
 
 
 app.use("/image",express.static(path.join(__dirname,"public/image")));
@@ -78,20 +70,53 @@ app.use("/api/message",messageRouter);
 
 
 // Socket.IO setup
-io.on("connection", (socket) => {
-  console.log("New client connected");
-
-  // Listen for chat messages
-  socket.on("chatMessage", (msg) => {
-    io.emit("message", msg); // Broadcast the message to all clients
-  });
-
-  // Handle client disconnection
-  socket.on("disconnect", () => {
-    console.log("Client disconnected");
-  });
+const io = require("socket.io")(8900, {
+  cors: {
+    origin: "https://social-app-frontend-chka.onrender.com",
+  },
 });
 
+let users = [];
+
+const addUser = (userId, socketId) => {
+  !users.some((user) => user.userId === userId) &&
+    users.push({ userId, socketId });
+};
+
+const removeUser = (socketId) => {
+  users = users.filter((user) => user.socketId !== socketId);
+};
+
+const getUser = (userId) => {
+  return users.find((user) => user.userId === userId);
+};
+
+io.on("connection", (socket) => {
+  //when ceonnect
+  console.log("a user connected.");
+
+  //take userId and socketId from user
+  socket.on("addUser", (userId) => {
+    addUser(userId, socket.id);
+    io.emit("getUsers", users);
+  });
+
+  //send and get message
+  socket.on("sendMessage", ({ senderId, receiverId, text }) => {
+    const user = getUser(receiverId);
+    io.to(user.socketId).emit("getMessage", {
+      senderId,
+      text,
+    });
+  });
+
+  //when disconnect
+  socket.on("disconnect", () => {
+    console.log("a user disconnected!");
+    removeUser(socket.id);
+    io.emit("getUsers", users);
+  });
+});
 ////////////////////////
 
 app.listen(PORT, () =>{
