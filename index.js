@@ -10,8 +10,10 @@ const conversationRouter=require("./routes/conversation");
 const messageRouter =require("./routes/message");
 const multer=require("multer");
 const path=require("path");
-const PORT=process.env.PORT || 8000
+const PORT= 8000
 const cors=require("cors")
+const http=require("http")
+const socketIo = require("socket.io");
 
 dotenv.config();
 
@@ -21,6 +23,16 @@ mongoose.connect(process.env.MONGO_URL, {useNewUrlParser: true,  useUnifiedTopol
 
 
 const app=express();
+///////////
+const server = http.createServer(app);
+const io = socketIo(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  }
+});
+////////////////
+
 
 app.use("/image",express.static(path.join(__dirname,"public/image")));
 
@@ -64,6 +76,23 @@ app.use("/api/posts",postRouter);
 app.use("/api/conversation",conversationRouter);
 app.use("/api/message",messageRouter);
 
+
+// Socket.IO setup
+io.on("connection", (socket) => {
+  console.log("New client connected");
+
+  // Listen for chat messages
+  socket.on("chatMessage", (msg) => {
+    io.emit("message", msg); // Broadcast the message to all clients
+  });
+
+  // Handle client disconnection
+  socket.on("disconnect", () => {
+    console.log("Client disconnected");
+  });
+});
+
+////////////////////////
 
 app.listen(PORT, () =>{
     console.log("Connected at port",PORT);
